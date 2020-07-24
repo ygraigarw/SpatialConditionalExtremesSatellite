@@ -30,25 +30,26 @@ if C.StrAgn==1
 end
 
 %% Handle restarts
-tFil=sprintf('%s-Prm%.2f.mat',X.DatNam,100*X.Nep);
+tFil=sprintf('%s-Prm.mat',X.DatNam);
 if exist(fullfile(cd,tFil),'file')==2
     fprintf(1,'Using previous chain\n');
     load(tFil,'C');
-    tC=C; clear C;
+    tC=C; 
     % make sure mI is correct, when restarting from deliberately crashed runs
     mI=size(tC.Alp,1);
     tC.AccRat=tC.AccRat(1:mI,:); % previous acceptance rate values
     tC.Ngt=tC.Ngt(1:mI,:); %previous nugget values
     tC.Nll=tC.Nll(1:mI,:); %previous negative log-likelihood values
     tC.Prm=tC.Prm(1:mI,:); %previous SCE model parameter values
-    
+    C = rmfield(C,{'AccRat','Ngt','Nll','Prm','nI'});
+
     % MCMC arrays
     C.AccRat=nan(mI+nI,nP);C.AccRat(1:mI,:)=tC.AccRat; %acceptance rate
     C.Ngt=nan(mI+nI,nP);C.Ngt(1:mI,:)=tC.Ngt; %adaptive MCMC nugget
     C.Nll=nan(mI+nI,1);C.Nll(1:mI,:)=tC.Nll; %negative log-likelihood
     C.Prm=nan(mI+nI,nP);C.Prm(1:mI,:)=tC.Prm; %SCE model parameter values
     C.nI=mI+nI; %number of iterations
-    C.nH = 
+
     Nll=C.Nll(mI);
     Prm=C.Prm(mI,:)';
 else
@@ -100,8 +101,7 @@ for iI=mI+1:mI+nI  %loop over iterations
         % define candidate in terms of current state
         PrmC=Prm;
         
-        nH=C.nH;
-        nA=C.nA;
+        nH=C.nH; nA=C.nA;
         if iI<=AdpItr1 %fixed nugget
             tNgt=NgtStr;
             PrmC(iP)=PrmC(iP)+randn*tNgt;
@@ -216,7 +216,7 @@ for iI=mI+1:mI+nI  %loop over iterations
             % obtain trace plots
             figure(1); clf;
             PltTrc(C,iI,iI);
-            tFil=sprintf('%s-TrcPrg%.2f',X.DatNam,100*X.Nep);
+            tFil=sprintf('%s-TrcPrg',X.DatNam);
             HlpSveImg(tFil,2);
         end
     end
@@ -227,7 +227,7 @@ for iI=mI+1:mI+nI  %loop over iterations
         % obtain trace plots
         figure(1); clf;
         PltTrc(C,iI,iI);
-        tFil=sprintf('%s-TrcPrg%.2f',X.DatNam,100*X.Nep);
+        tFil=sprintf('%s-TrcPrg',X.DatNam);
         HlpSveImg(tFil,2);
         
         % diagnostic plots
@@ -241,7 +241,7 @@ for iI=mI+1:mI+nI  %loop over iterations
         PrmPrg=C.Prm(iI,:)';
         NgtPrg=C.Ngt(iI,:)';
         ItrPrg=iI;
-        tFil=sprintf('%s-PrmPrg%.2f.mat',X.DatNam,100*X.Nep);
+        tFil=sprintf('%s-PrmPrg.mat',X.DatNam);
         save(tFil,'PrmPrg','NgtPrg','ItrPrg');
         
         % print progress to terminal 
@@ -257,24 +257,24 @@ for iI=mI+1:mI+nI  %loop over iterations
         % save whole MCMC chain
         DatNam=X.DatNam;
         Nep=X.Nep;
-        tFil=sprintf('%s-Prm%.2f.mat',DatNam,100*Nep);
+        tFil=sprintf('%s-Prm.mat',DatNam);
         save(tFil,'C','mI','nI','NmbToPlt','DatNam','Nep');
         
         % trace plots
         figure(1);
         clf; PltTrc(C,iI,iI); % save full trace plot
-        HlpSveImg(sprintf('%s-trace%g%s',DatNam,100*Nep,datestr(now,30)),2);
+        HlpSveImg(sprintf('%s-trace%s',DatNam,datestr(now,30)),2);
         clf; PltTrc(C,iI,NmbToPlt); % save end of trace plot
-        HlpSveImg(sprintf('%s-trace_end%g%s',DatNam,100*Nep,datestr(now,30)),2);
+        HlpSveImg(sprintf('%s-trace_end%s',DatNam,datestr(now,30)),2);
         
         % diagnostic plots
         figure(2);
         clf; PltDgn(C,iI);
-        HlpSveImg(sprintf('%s-Dgn%g%s',DatNam,100*Nep,datestr(now,30)),2);    
+        HlpSveImg(sprintf('%s-Dgn%s',DatNam,datestr(now,30)),2);    
         tStr=cell(3,1);
-        tStr{1}=sprintf('%s-Prm%g%s',DatNam,100*Nep,datestr(now,30));
-        tStr{2}=sprintf('%s-DrcAlp%g%s',DatNam,100*Nep,datestr(now,30));
-        tStr{3}=sprintf('%s-DrcBet%g%s',DatNam,100*Nep,datestr(now,30));
+        tStr{1}=sprintf('%s-Prm%s',DatNam,datestr(now,30));
+        tStr{2}=sprintf('%s-DrcAlp%s',DatNam,datestr(now,30));
+        tStr{3}=sprintf('%s-DrcBet%s',DatNam,datestr(now,30));
         PltPrm(C,iI,NmbToPlt,tStr);
         
     end

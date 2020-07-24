@@ -1,5 +1,5 @@
-function Crr = GetRsdCrr(P,H,C)
-%% function Crr = GetRsdCrr(P,H,C)
+function Crr = GetRsdCrr(X,P,H,C)
+%% function Crr = GetRsdCrr(X,P,H)
 %
 % Conditional spatial extremes with delta-Laplace residuals
 % Philip Jonathan, Rob Shooter, Emma Ross
@@ -14,19 +14,23 @@ function Crr = GetRsdCrr(P,H,C)
 % H.HR      q x q    Distances between pairs of conditioned locations
 % P.R(1)    1 x 1    Scale parameter for exponential correlation 
 % P.R(2)    1 x 1    Exponent parameter for exponential correlation
-% C.Scl1    1 x 1    parameters used in GetRsdCrr function, suitable for satellite application    
-% C.Scl2    1 x 1    parameters used in GetRsdCrr function, suitable for satellite application    
+% X.XRC     n x q    Data for conditioned locations
+% C.Scl1, C.Scl2 1 parameter suitable for satellite application
+Scl1=100; 
+Scl2=2;
+
+%
 % Output
 % Crr       q x q    Correlations for the SCE residual process
 
-q=size(H.H0,1);
+q=size(X.XRC,2);
 
 
 %% Standard Gaussian correlation "marginally" between conditioned and reference location
 Rho=nan(q,1);
 for iC=1:q
     tH=H.H0(iC);
-    Rho(iC)=exp( -( tH / (C.Scl1*(P.R(1))) )^(C.Scl2*P.R(2)) );
+    Rho(iC)=exp( -( tH / (C.Scl1*(P.R(1))) )^(Scl2*P.R(2)) );
 end
 
 %% Standard Gaussian correlation between pairs of conditioned locations
@@ -34,7 +38,7 @@ Crs=nan(q,q);
 for iC=1:q
     for jC=1:q
         tH=H.HR(iC,jC);
-        Crs(iC,jC)=exp( -( tH / (C.Scl1*(P.R(1))) )^(C.Scl2*P.R(2)) );
+        Crs(iC,jC)=exp( -( tH / (C.Scl1*(P.R(1))) )^(Scl2*P.R(2)) );
     end
 end
 

@@ -31,13 +31,15 @@ X.Nep=0.8; %non-exceedance probability for CSE model
 X.CndLct=1; %index of conditioning location
 % C: spatial conditional extremes model related
 C.IsCQC=1; %=1 == Impose conditional quantile constraints; =0 == No constraints
-C.StrAgn=0; %=1 == Impose conditional quantile constraints; =0 == No constraints
+C.StrAgn=0; %=1 == Start the analysis from scratch; =0 == Do not restart the analysis, i.e. use previously-saved progress
 C.nI=10; %number of MCMC iterations
 C.Rpl=1; %replicate number (to distinguish replicate analyses)
 C.nH=10; %number of distance nodes
 C.nA=1; %number of directional nodes
 C.HMxm=12; %maximum interlocation distance; in units of EarthRadius*pi/180; one unit is 111.2km
 
+Scl1=100; 
+Scl2=2;
 % Starting solution
 C.Prm0=[...
     ones(C.nH*C.nA,1)*0.5;...  %for all alphas and angles
@@ -65,6 +67,9 @@ C.NmbToPlt=1000; %number of iterations (at end of the chain) to use for plotting
 C.AdpItr1=500; %(adaptive MCMC setting) no. iterations for fixed nugget. Warning: must take minimum value of 100 
 C.AdpItr2=500; %(adaptive MCMC setting) no. iterations for adaptive nugget. Warning: must take minimum value of 100 
 C.AdpBet=0.05; %(adaptive MCMC setting) proportion of proposal distribution made up of adaptive nugget 
+%parameters used in GetRsdCrr function, suitable for satellite application
+C.Scl1=100;    
+C.Scl2=2;    
 
 % << END USER INPUT
 
@@ -145,17 +150,16 @@ if C.IsCQC==1 % if have conditional quantile constraints switched on
     tFil=sprintf('%s-CQCBnd.mat',X.DatNam); %filename for conditional quantile constraints
     if exist(fullfile(cd,tFil),'file')==2  %if file already exists and don't want to regenerate it then load
         fprintf(1,'Using existing CQC boundaries\n');
-        load(tFil,'CQCBndL','CQCNepLst');
-        C.CQCBndL=CQCBndL; 
-        
+        load(tFil,'CQCBndL','CQCNepLst');    
     else % if don't have CQC boundaries already or want to regenerate, calculate ...
         %...and check that your starting value satifies them
         fprintf(1,'Generating new CQC boundaries\n');
-        C.CQCBndL=DgnCQC(X); %plot the domains of CQC constraints for lagDatL
+        CQCBndL=DgnCQC(X); %plot the domains of CQC constraints for lagDatL
         CQCNepLst=X.Nep;
         save(tFil,'CQCBndL','CQCNepLst');
         fprintf(1,'Saved CQC boundaries\n');
     end
+    C.CQCBndL=CQCBndL;
     
     % ---- Check starting value: once have landed on C.Prm0 which is
     % feasible, set above StartingSolutionOk=true and code will move onto

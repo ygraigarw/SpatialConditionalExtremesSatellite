@@ -22,7 +22,7 @@ NgtStr=C.NgtStr; %starting nuggest standard deviation
 %% New analysis, delete any previous progress files (BUT KEEP CQC BOUNDARIES)
 if C.StrAgn==1
     fprintf('Starting again. Deleting previous analysis.\n');
-    tFil=sprintf('%s-Prm%.2f.mat',X.DatNam,100*X.Nep);
+    tFil=sprintf('%s-Prm.mat',X.DatNam);
     if exist(fullfile(cd,tFil),'file')==2
         tStr=sprintf('delete %s\n',tFil);
         eval(tStr);
@@ -216,7 +216,7 @@ for iI=mI+1:mI+nI  %loop over iterations
             % obtain trace plots
             figure(1); clf;
             PltTrc(C,iI,iI);
-            tFil=sprintf('%s-TrcPrg%.2f',X.DatNam,100*X.Nep);
+            tFil=sprintf('%s-TrcPrg',X.DatNam);
             HlpSveImg(tFil,2);
         end
     end
@@ -227,7 +227,7 @@ for iI=mI+1:mI+nI  %loop over iterations
         % obtain trace plots
         figure(1); clf;
         PltTrc(C,iI,iI);
-        tFil=sprintf('%s-TrcPrg%.2f',X.DatNam,100*X.Nep);
+        tFil=sprintf('%s-TrcPrg',X.DatNam);
         HlpSveImg(tFil,2);
         
         % diagnostic plots
@@ -241,7 +241,7 @@ for iI=mI+1:mI+nI  %loop over iterations
         PrmPrg=C.Prm(iI,:)';
         NgtPrg=C.Ngt(iI,:)';
         ItrPrg=iI;
-        tFil=sprintf('%s-PrmPrg%.2f.mat',X.DatNam,100*X.Nep);
+        tFil=sprintf('%s-PrmPrg.mat',X.DatNam);
         save(tFil,'PrmPrg','NgtPrg','ItrPrg');
         
         % print progress to terminal 
@@ -257,24 +257,24 @@ for iI=mI+1:mI+nI  %loop over iterations
         % save whole MCMC chain
         DatNam=X.DatNam;
         Nep=X.Nep;
-        tFil=sprintf('%s-Prm%.2f.mat',DatNam,100*Nep);
+        tFil=sprintf('%s-Prm.mat',DatNam);
         save(tFil,'C','mI','nI','NmbToPlt','DatNam','Nep');
         
         % trace plots
         figure(1);
         clf; PltTrc(C,iI,iI); % save full trace plot
-        HlpSveImg(sprintf('%s-trace%g%s',DatNam,100*Nep,datestr(now,30)),2);
+        HlpSveImg(sprintf('%s-trace%s',DatNam,datestr(now,30)),2);
         clf; PltTrc(C,iI,NmbToPlt); % save end of trace plot
-        HlpSveImg(sprintf('%s-trace_end%g%s',DatNam,100*Nep,datestr(now,30)),2);
+        HlpSveImg(sprintf('%s-trace_end%s',DatNam,datestr(now,30)),2);
         
         % diagnostic plots
         figure(2);
         clf; PltDgn(C,iI);
-        HlpSveImg(sprintf('%s-Dgn%g%s',DatNam,100*Nep,datestr(now,30)),2);    
+        HlpSveImg(sprintf('%s-Dgn%s',DatNam,datestr(now,30)),2);    
         tStr=cell(3,1);
-        tStr{1}=sprintf('%s-Prm%g%s',DatNam,100*Nep,datestr(now,30));
-        tStr{2}=sprintf('%s-DrcAlp%g%s',DatNam,100*Nep,datestr(now,30));
-        tStr{3}=sprintf('%s-DrcBet%g%s',DatNam,100*Nep,datestr(now,30));
+        tStr{1}=sprintf('%s-Prm%s',DatNam,datestr(now,30));
+        tStr{2}=sprintf('%s-DrcAlp%s',DatNam,datestr(now,30));
+        tStr{3}=sprintf('%s-DrcBet%s',DatNam,datestr(now,30));
         PltPrm(C,iI,NmbToPlt,tStr);
         
     end
