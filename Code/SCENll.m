@@ -4,6 +4,8 @@ function Nll = SCENll(P,C,X)
 % Conditional spatial extremes with delta-Laplace residuals
 % Philip Jonathan, Rob Shooter, Emma Ross
 %
+% Spatial COnditional Extremes negative log likelihood function
+% 
 % Input
 % *** TO CHECK ***
 %

@@ -3,6 +3,8 @@ function C=MCMC(X,C)
 %
 % Conditional spatial extremes with delta-Laplace residuals
 % Philip Jonathan, Rob Shooter, Emma Ross
+%
+% Markov Chain Monte Carlo Alrgorithm
 
 figure(2); clf;   
 
@@ -123,7 +125,7 @@ for iI=mI+1:mI+nI  %loop over iterations
             PrmC(iP)=PrmC(iP)+randn*tNgt;
         else %adaptive Metropolis for A, B, M, S
             if iP<=nH %update alpha, beta, mu and sigma together
-                jP=[nHnA*(iP-1)+(1:nHnA), nHnA*(nH+iP-1)+(1:nHnA), 2*nHnA*nH+iP, 2*nHnA*nH+nH+iP]';   % Following lines are breakdown of equation XX in Roberts & Rosenthal (2009)
+                jP=[nA*(iP-1)+(1:nA), nA*(nH+iP-1)+(1:nA), 2*nA*nH+iP, 2*nA*nH+nH+iP]';   % Following lines are breakdown of equation XX in Roberts & Rosenthal (2009)
                 nJ=size(jP,1);
                 t1=real((1-AdpBet)*2.38*sqrtm(cov(C.Prm(max(1,iI-999):iI-1,jP))/nJ)*randn(nJ,1));  
                 t2=AdpBet*0.1*(randn(nJ,1)/nJ);
@@ -131,7 +133,7 @@ for iI=mI+1:mI+nI  %loop over iterations
                 tNgt=NaN;
                 C.Ngt(iI-1,jP(2:end))=NaN;
                 C.AccRat(iI-1,jP(2:end))=NaN;
-            elseif iP>2*nHnA*nH+2*nH
+            elseif iP>2*nA*nH+2*nH
                 if rem(iI,1)==0
                     if C.AccRat(iI-1,iP)>0.3
                         tNgt=C.Ngt(iI-1,iP)*1.01;
@@ -174,7 +176,7 @@ for iI=mI+1:mI+nI  %loop over iterations
                 else
                     if iP<=nH
                         C.AccRat(iI,jP(1))=(C.AccRat(iI-1,jP(1))*(jI-1)+1)/jI;
-                    elseif iP>2*nHnA*nH+2*nH
+                    elseif iP>2*nA*nH+2*nH
                         C.AccRat(iI,iP)=(C.AccRat(iI-1,iP)*(jI-1)+1)/jI;
                     end
                 end
@@ -191,7 +193,7 @@ for iI=mI+1:mI+nI  %loop over iterations
                 else
                     if iP<=nH
                         C.AccRat(iI,jP(1))=(C.AccRat(iI-1,jP(1))*(jI-1))/jI;
-                    elseif iP>2*nHnA*nH+2*nH
+                    elseif iP>2*nA*nH+2*nH
                         C.AccRat(iI,iP)=(C.AccRat(iI-1,iP)*(jI-1))/jI;
                     end
                 end
