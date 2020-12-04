@@ -24,7 +24,7 @@ HomPth= extractBefore(PthThisFil,PosDlm(length(PosDlm))); % return directory in 
 %START USER INPUT >>
 
 %Input data file
-X.DatFil=fullfile(HomPth,'Satellite_Preprocessed_NS_SWNE'); %input data file to use (whitened Hs data?)
+X.DatFil=fullfile(HomPth,'Satellite_Preprocessed_NS_SWNE'); %input data file to use: Laplace-scale Hs for set of reference locations 
 
 % X: peaks data-related
 X.Nep=0.8; %non-exceedance probability for CSE model
@@ -32,7 +32,7 @@ X.CndLct=1; %index of conditioning location
 % C: spatial conditional extremes model related
 C.IsCQC=1; %=1 == Impose conditional quantile constraints; =0 == No constraints
 C.StrAgn=0; %=1 == Start the analysis from scratch; =0 == Do not restart the analysis, i.e. use previously-saved progress
-C.nI=10; %number of MCMC iterations
+C.nI=5000; %number of MCMC iterations
 C.Rpl=1; %replicate number (to distinguish replicate analyses)
 C.nH=10; %number of distance nodes
 C.nA=1; %number of directional nodes
@@ -42,8 +42,8 @@ Scl1=100;
 Scl2=2;
 % Starting solution
 C.Prm0=[...
-    ones(C.nH*C.nA,1)*0.5;...  %for all alphas and angles
-    ones(C.nH*C.nA,1)*0.1;... %for all betas and angles
+    ones(C.nH*C.nA,1)*0.6;...  %for all alphas and angles   0.5
+    ones(C.nH*C.nA,1)*0.2;... %for all betas and angles     0.1
     ones(C.nH,1)*0.3; %for all mus
     ones(C.nH,1)*1.0; %for all sigma
     ones(C.nH,1)*1.5; %for all deltas
